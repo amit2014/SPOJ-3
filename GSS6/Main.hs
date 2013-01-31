@@ -104,13 +104,13 @@ main = do
          let ps = map (singleton.read) $ words lineII
              tree = foldr (\p t -> insert alwaysFirst t 0 p) (Leaf $ singleton 0) ps
          _ <- getLine
-         queryLines <- getContents
-         let answers = flip itr tree $ map ((\s->(head $ head s,map read $ tail s)).words) $ lines $ filter (/='\r') queryLines
+         queries <- getContents
+         let answers = flip itr tree $ map ((\s->(head $ head s, map read $ tail s)) . words) $ lines queries
          putStr $ unlines $ map show answers
      where
        itr (op:ops) tree
          = case op of
-             ('I', [k,v]) -> itr ops $ insert kth tree k (singleton v)
+             ('I', [k,v]) -> itr ops $ insert kth tree k $ singleton v
              ('D', [k])   -> itr ops $ update kth tree k $ const mempty
              ('R', [k,v]) -> itr ops $ update kth tree k $ const $ singleton v
              ('Q', [l,r]) -> gmax (query inRange tree (l,r)) : itr ops tree
